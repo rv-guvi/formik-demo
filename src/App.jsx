@@ -1,7 +1,11 @@
 import 'bootstrap/dist/css/bootstrap.min.css'
 import { useFormik } from 'formik'
+import { useEffect, useState } from 'react'
 
 function App() {
+  const [geoState,setGeoState] = useState([])
+  const [geoCity,setGeoCity] = useState([])
+
   const formik = useFormik({
     initialValues: {
       userName: "",
@@ -29,6 +33,104 @@ function App() {
       console.log(values)
     }
   })
+
+  let geoData = {
+    countries : [
+      {
+        name : "India",
+        value : "IN"
+      },
+      {
+        name : "America",
+        value : "US"
+      }
+    ],
+    states : [
+      {
+        name : "Tamil Nadu",
+        key : "TN",
+        country : "IN"
+      },
+      {
+        name : "Kerla",
+        key : "KL",
+        country : "IN"
+      },
+      {
+        name : "Alaska",
+        key : "AL",
+        country : "US"
+      },
+      {
+        name : "Texas",
+        key : "TX",
+        country : "US"
+      }
+    ],
+    cities : [
+      {
+        name : "Chennai",
+        key : "CH",
+        state : "TN"
+      },
+      {
+        name : "Madural",
+        key : "MD",
+        state : "TN"
+      },
+      {
+        name : "Kochi",
+        key : "KO",
+        state : "KL"
+      },
+      {
+        name : "Wayanad",
+        key : "WD",
+        state : "KL"
+      },
+      {
+        name : "Seward",
+        key : "SE",
+        state : "AL"
+      },
+      {
+        name : "Haines",
+        key : "HA",
+        state : "AL"
+      },
+      {
+        name : "Houston",
+        key : "HO",
+        state : "TX"
+      },
+      {
+        name : "Dallas",
+        key : "DA",
+        state : "TX"
+      }
+    ]
+  }
+
+
+  useEffect(() => {
+    // US
+    // Find all the states belongs to Selected Country Code.
+    let stateList = geoData.states.filter((state) => {
+      return state.country == formik.values.country
+    })
+    setGeoState(stateList)
+  },[formik.values.country])
+
+  useEffect(() => {
+    // US
+    // Find all the states belongs to Selected Country Code.
+    let cityList = geoData.cities.filter((city) => {
+      return city.state == formik.values.state
+    })
+    setGeoCity(cityList)
+  },[formik.values.state])
+
+
   return (
     <>
       <div className='container'>
@@ -76,8 +178,11 @@ function App() {
                     value={formik.values.state}
                     onChange={formik.handleChange}
                     id="" className='form-control'>
-                    <option value="TN">Tamil Nadu</option>
-                    <option value="KL">Kerla</option>
+                    {
+                      geoState.map((state) => {
+                        return <option value={state.key}>{state.name}</option>
+                      })
+                    }
                   </select>
                 </div>
                 <div className='col-lg-4'>
@@ -87,8 +192,11 @@ function App() {
                     value={formik.values.city}
                     onChange={formik.handleChange}
                     id="" className='form-control'>
-                    <option value="CH">Chennai</option>
-                    <option value="MA">Madurai</option>
+                    {
+                      geoCity.map((city) => {
+                        return <option key={city.key}>{city.name}</option>
+                      })
+                    }
                   </select>
                 </div>
               </div>
